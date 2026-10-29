@@ -152,8 +152,15 @@
   <ItemGroup>
     <None Include="Resources\earth_lock.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\keepassnatmsg-proxy.exe" />
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- The native messaging proxy is a separate executable that gets embedded into the plugin -->
+  <Target Name="BuildProxy" BeforeTargets="BeforeBuild" Inputs="..\KeePassNatMsg.Proxy\Proxy.cs" Outputs="Resources\keepassnatmsg-proxy.exe">
+    <Csc Sources="..\KeePassNatMsg.Proxy\Proxy.cs" OutputAssembly="Resources\keepassnatmsg-proxy.exe" TargetType="exe" Optimize="true" LangVersion="5" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

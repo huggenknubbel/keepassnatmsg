@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -36,7 +37,6 @@ namespace KeePassNatMsg.NativeMessaging
     {
         protected const string NmhKey = "NativeMessagingHosts";
         protected const string ProxyExecutable = "keepassnatmsg-proxy.exe";
-        private const string GithubRepo = "https://github.com/smorks/keepassnatmsg-proxy";
         private const string ExtKeyBrowser = "org.keepassxc.keepassxc_browser";
         private const string ExtKeyThunderbird = "de.kkapsner.keepassxc_mail";
 
@@ -49,12 +49,6 @@ namespace KeePassNatMsg.NativeMessaging
             {
                 return Path.Combine(ProxyPath, ProxyExecutable);
             }
-        }
-
-        protected NativeMessagingHost()
-        {
-            // enable TLS 1.2
-            System.Net.ServicePointManager.SecurityProtocol = (System.Net.SecurityProtocolType)3072;
         }
 
         public static NativeMessagingHost GetHost()
@@ -104,37 +98,39 @@ namespace KeePassNatMsg.NativeMessaging
             return null;
         }
 
-        public Version GetLatestProxyVersion()
+        // The proxy is embedded into the plugin, see KeePassNatMsg.Proxy
+        private static byte[] GetEmbeddedProxy()
         {
-            var web = new System.Net.WebClient();
-            var latestVersion = web.DownloadString(string.Format("{0}/raw/master/version.txt", GithubRepo));
-            Version lv;
-            if (Version.TryParse(latestVersion, out lv))
+            var assembly = typeof(NativeMessagingHost).Assembly;
+            var name = Array.Find(assembly.GetManifestResourceNames(), n => n.EndsWith(ProxyExecutable, StringComparison.OrdinalIgnoreCase));
+            using (var stream = assembly.GetManifestResourceStream(name))
+            using (var ms = new MemoryStream())
             {
-                return lv;
+                stream.CopyTo(ms);
+                return ms.ToArray();
             }
-            return null;
+        }
+
+        public bool IsProxyUpToDate()
+        {
+            return File.Exists(ProxyExePath) && StructuralComparisons.StructuralEqualityComparer.Equals(File.ReadAllBytes(ProxyExePath), GetEmbeddedProxy());
         }
 
         public bool UpdateProxy()
         {
             try
             {
-                var latestVersion = GetLatestProxyVersion();
-                var exeVer = GetProxyVersion();
-                var newVersion = exeVer == null ? true : latestVersion > exeVer;
-
-                if (newVersion)
+                if (!IsProxyUpToDate())
                 {
-                    var web = new System.Net.WebClient();
-                    web.DownloadFile(string.Format("{0}/releases/download/v{1}/{2}", GithubRepo, latestVersion, ProxyExecutable), ProxyExePath);
+                    Directory.CreateDirectory(ProxyPath);
+                    File.WriteAllBytes(ProxyExePath, GetEmbeddedProxy());
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ParentForm, "An error occurred attempting to download the proxy application: " + ex.ToString(), "Proxy Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ParentForm, "An error occurred attempting to install the proxy application. If a browser is running, close it and try again.\n\n" + ex, "Proxy Install Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
         }

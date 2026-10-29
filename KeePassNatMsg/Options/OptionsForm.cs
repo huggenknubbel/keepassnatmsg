@@ -265,21 +265,13 @@ namespace KeePassNatMsg.Options
                 lst.Add(string.Format("{0}: {1}", b.GetDescription(), statuses[b].GetDescription()));
             }
 
-            var latestVersion = _host.GetLatestProxyVersion();
             var proxyVersion = _host.GetProxyVersion();
             var proxyDisplay = proxyVersion == null ? "Not Installed" : proxyVersion.ToString();
             var latestVersionDisplay = string.Empty;
 
-            if (proxyVersion != null && latestVersion != null)
+            if (proxyVersion != null)
             {
-                if (latestVersion > proxyVersion)
-                {
-                    latestVersionDisplay = " New Version Available: " + latestVersion;
-                }
-                else
-                {
-                    latestVersionDisplay = " (Up To Date)";
-                }
+                latestVersionDisplay = _host.IsProxyUpToDate() ? " (Up To Date)" : " (Update Available)";
             }
 
             lst.Add(string.Format("Proxy: {0}{1}", proxyDisplay, latestVersionDisplay));

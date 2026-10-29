@@ -6,7 +6,7 @@ namespace KeePassNatMsg.NativeMessaging
 {
     public abstract class PosixHost : NativeMessagingHost
     {
-        private const string PosixScript = "#!/bin/bash\nmono {0}\n";
+        private const string PosixScript = "#!/bin/bash\nexec mono \"{0}\"\n";
         private const string PosixProxyPath = ".keepassnatmsg";
 
         private string _home = Environment.GetEnvironmentVariable("HOME");
@@ -65,7 +65,7 @@ namespace KeePassNatMsg.NativeMessaging
                 Directory.CreateDirectory(ProxyPath);
             }
             var monoScript = Path.Combine(ProxyPath, "run-proxy.sh");
-            File.WriteAllText(monoScript, string.Format(PosixScript, ProxyExecutable), _utf8);
+            File.WriteAllText(monoScript, string.Format(PosixScript, ProxyExePath), _utf8);
 
             Mono.Unix.Native.Stat st;
             Mono.Unix.Native.Syscall.stat(monoScript, out st);

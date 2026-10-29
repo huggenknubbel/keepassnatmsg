@@ -31,6 +31,7 @@ The original KeePassNatMsg 2.0.17 was released in January 2024. This fork adds:
  * **Group name** is returned with each login, so the extension no longer shows "undefined" ([smorks/keepassnatmsg#121](https://github.com/smorks/keepassnatmsg/issues/121)).
  * **Port numbers**: an entry URL with an explicit port only matches that port, like in KeePassXC ([smorks/keepassnatmsg#88](https://github.com/smorks/keepassnatmsg/issues/88)).
  * **Dependencies**: Newtonsoft.Json 13.0.4 (fixes CVE-2024-21907), BouncyCastle 2.7.0 for the passkey cryptography, .NET Framework 4.8.
+ * **Native messaging proxy** is part of this project and embedded into the plugin. It is no longer downloaded from the original project when installing the native messaging host.
  * **Builds and releases** run again on current GitHub runners.
 
 ### AI assistance
@@ -55,7 +56,7 @@ This fork was partly developed with AI assistance.
  	`sudo apt-get install libmono-system-xml-linq4.0-cil libmono-system-data-datasetextensions4.0-cil libmono-system-runtime-serialization4.0-cil mono-mcs`
  4. Restart KeePass
  5. Go to Tools -> KeePassNatMsg Options
- 6. Click on "Install/Update Native Messaging Host", wait for message telling you it was installed.
+ 6. Click on "Install/Update Native Messaging Host", wait for message telling you it was installed. This also installs the proxy that connects the browser to KeePass; after updating KeePassNatMsg, click it again to update the proxy.
  7. Install the [KeePassXC-Browser](https://github.com/keepassxreboot/keepassxc-browser) extension for your browser, and Connect to the database from within the extension.
 
 #### Package managers

@@ -37,7 +37,7 @@ jobs:
           7z a $zip .\build\KeePassNatMsg\ "-xr!*.pdb"
           $hash = (Get-FileHash "$zip" sha256).Hash.ToLower()
           Set-Content -Path 'release.txt' -Value ('### SHA256 Hash',('* '+$zip),('  * '+$hash))
-          git clean -fx KeePassNatMsg
+          git clean -fx -e keepassnatmsg-proxy.exe KeePassNatMsg
           $p = Start-Process -FilePath ".\build\KeePass.exe" -ArgumentList "--plgx-create","$pwd\KeePassNatMsg" -PassThru
           $p.WaitForExit()
           $plgx = 'KeePassNatMsg.plgx'
