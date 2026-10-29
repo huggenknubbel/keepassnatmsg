@@ -104,8 +104,10 @@ namespace KeePassNatMsg.Entry
                     return c == null || (!c.Allow.Contains(hostUri.Authority)) || (submitUri != null && !c.Allow.Contains(submitUri.Authority));
                 });
 
-                // Like KeePassXC, HTTP Basic Auth always asks, so the right entry can be picked
-                var askHttpAuth = httpAuth && !configOpt.HttpAuthPermission;
+                // Like KeePassXC, HTTP Basic Auth always asks, so the right entry can be picked.
+                // With "always allow access" only when there is something to pick.
+                var askHttpAuth = httpAuth && !configOpt.HttpAuthPermission
+                    && (!configOpt.AlwaysAllowAccess || items.Count() > 1);
                 var needPrompting = items.Where(e => askHttpAuth || filter(e.entry)).ToList();
 
                 if (needPrompting.Count > 0 && (askHttpAuth || !(configOpt.AlwaysAllowAccess || httpAuth)))
