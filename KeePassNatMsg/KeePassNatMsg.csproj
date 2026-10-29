@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KeePassNatMsg</RootNamespace>
     <AssemblyName>KeePassNatMsg</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -41,8 +41,8 @@
       <HintPath>..\build\KeePass.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>lib\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle.Cryptography">
+      <HintPath>lib\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix">

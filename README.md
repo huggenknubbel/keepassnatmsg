@@ -26,9 +26,9 @@ This plugin is primarily intended for use with the [keepassxc-browser](https://g
 
 ## System requirements
  * KeePass 2.17 or higher
- * For Windows: .NET Framework 4.0 or higher
- * For Linux: Mono 4.0 or higher
- * For Mac: Mono 4.0 or higher (untested)
+ * For Windows: .NET Framework 4.8 or higher
+ * For Linux: Mono 6.8 or higher
+ * For Mac: Mono 6.8 or higher (untested)
 
 ## Installation
 
