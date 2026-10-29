@@ -1,6 +1,6 @@
 [![Main workflow](https://github.com/huggenknubbel/keepassnatmsg/actions/workflows/workflow.yml/badge.svg)](https://github.com/huggenknubbel/keepassnatmsg/actions/workflows/workflow.yml)
 
-> This is a maintained fork of [smorks/keepassnatmsg](https://github.com/smorks/keepassnatmsg), which is no longer developed. It adds passkey support compatible with KeePassXC and keeps dependencies up to date.
+> This is a maintained fork of [smorks/keepassnatmsg](https://github.com/smorks/keepassnatmsg), which is no longer developed. It adds passkey support compatible with KeePassXC and keeps dependencies up to date. See [Changes compared to the original](#changes-compared-to-the-original).
 
 # KeePassNatMsg
 
@@ -20,22 +20,37 @@ This plugin is primarily intended for use with the [keepassxc-browser](https://g
  * request for unlocking the database if it is locked while connecting
  * searches in all opened databases (if user activates this feature)
  * Whenever events occur, the user is prompted either by tray notification or requesting interaction (allow/deny/remember).
- * passkeys, stored in the same `KPEX_PASSKEY_*` fields as KeePassXC, so they work in both (requires passkeys to be enabled in keepassxc-browser)
+ * passkeys, stored in the same `KPEX_PASSKEY_*` fields as KeePassXC, so they work in both (see [Passkeys](#passkeys))
+
+## Changes compared to the original
+
+The original KeePassNatMsg 2.0.17 was released in January 2024. This fork adds:
+
+ * **Passkeys** (`passkeys-register` and `passkeys-get`), compatible with KeePassXC's implementation. A KeePass database can be used with KeePass on one machine and KeePassXC on another, passkeys included.
+ * **Password generator** works again with current keepassxc-browser versions ([smorks/keepassnatmsg#118](https://github.com/smorks/keepassnatmsg/issues/118)). The plugin now reports KeePassXC 2.7.10 to the extension.
+ * **Group name** is returned with each login, so the extension no longer shows "undefined" ([smorks/keepassnatmsg#121](https://github.com/smorks/keepassnatmsg/issues/121)).
+ * **Port numbers**: an entry URL with an explicit port only matches that port, like in KeePassXC ([smorks/keepassnatmsg#88](https://github.com/smorks/keepassnatmsg/issues/88)).
+ * **Dependencies**: Newtonsoft.Json 13.0.4 (fixes CVE-2024-21907), BouncyCastle 2.7.0 for the passkey cryptography, .NET Framework 4.8.
+ * **Builds and releases** run again on current GitHub runners.
+
+### AI assistance
+
+Most of the code in this fork was written with AI assistance (Claude by Anthropic, via Claude Code). The changes were reviewed and tested by the maintainer: the passkey cryptography is checked against the test vectors of KeePassXC and against Botan, the library KeePassXC uses, and the plugin was tested end-to-end with KeePass 2.61 on Mono and on Windows.
 
 ## System requirements
- * KeePass 2.17 or higher
+ * KeePass 2.x (tested with 2.61)
  * For Windows: .NET Framework 4.8 or higher
  * For Linux: Mono 6.8 or higher
  * For Mac: Mono 6.8 or higher (untested)
 
 ## Installation
 
- 1. Download the latest [KeePassNatMsg](https://github.com/huggenknubbel/keepassnatmsg/releases) release
- 	* Arch Linux (AUR): https://aur.archlinux.org/packages/keepass-natmsg/
- 2. Unzip it into the KeePass\Plugins directory
+ 1. Download the latest [KeePassNatMsg](https://github.com/huggenknubbel/keepassnatmsg/releases) release (`KeePassNatMsg-<version>-binaries.zip` or `KeePassNatMsg.plgx`)
+ 2. Unzip it into the KeePass\Plugins directory (or copy the `.plgx` file there). Remove older versions of KeePassNatMsg from that directory first.
+	* No administrator rights are needed when using the portable version of KeePass in your user directory. The native messaging host is registered for the current user only.
 	* default directory in Ubuntu14.04: /usr/lib/keepass2/
 	* default directory in Arch: /usr/share/keepass
- 3. On linux systems you maybe need to install mono-complete: `$ apt-get install mono-complete` (in Debian it should be enough to install the packages libmono-system-runtime-serialization4.0-cil and libmono-posix2.0-cil)
+ 3. On linux systems you maybe need to install mono-complete: `$ apt-get install mono-complete` (in Debian it should be enough to install the packages libmono-system-runtime-serialization4.0-cil and libmono-posix2.0-cil). Without libmono-system-runtime-serialization4.0-cil the plugin loads, but never answers the browser extension.
  * Tips to run KeePassNatMsg on lastest KeePass 2.31: install packages
  	`sudo apt-get install libmono-system-xml-linq4.0-cil libmono-system-data-datasetextensions4.0-cil libmono-system-runtime-serialization4.0-cil mono-mcs`
  4. Restart KeePass
@@ -43,14 +58,19 @@ This plugin is primarily intended for use with the [keepassxc-browser](https://g
  6. Click on "Install/Update Native Messaging Host", wait for message telling you it was installed.
  7. Install the [KeePassXC-Browser](https://github.com/keepassxreboot/keepassxc-browser) extension for your browser, and Connect to the database from within the extension.
 
-#### Chocolatey 📦 
-Or you can [use Chocolatey to install](https://community.chocolatey.org/packages/keepass-plugin-keepassnatmsg#install) it in a more automated manner:
+#### Package managers
+
+The [Chocolatey package](https://community.chocolatey.org/packages/keepass-plugin-keepassnatmsg) and the [AUR package](https://aur.archlinux.org/packages/keepass-natmsg/) install the original KeePassNatMsg, not this fork. They don't include passkey support.
 
 ```
 choco install keepass-plugin-keepassnatmsg
 ```
 
-To [upgrade KeePass Plugin KeePassNatMsg](https://community.chocolatey.org/packages/keepass-plugin-keepassnatmsg#upgrade) to the [latest release version](https://community.chocolatey.org/packages/keepass-plugin-keepassnatmsg#versionhistory) for enjoying the newest features, run the following command from the command line or from PowerShell:
+To upgrade the original package:
+
+```
+choco install keepass-plugin-keepassnatmsg
+```
 
 ```
 choco upgrade keepass-plugin-keepassnatmsg
@@ -104,7 +124,7 @@ The options dialog will appear:
   - Always use a specific database.
 13. When activated, it will search all string fields beginning with "URL".
 14. if activated KeePassNatMsg also search for string fields which are defined in the found entries and start with "KPH: " (note the space after colon). __The string fields will be transferred to the client in alphabetical order__. You can set string fields in the tab _Advanced_ of an entry.
-[<img src="https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/advanced-string-fields.png" alt="advanced tab of an entry" width="300px" />](https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/advanced-string-fields.png)
+[<img src="documentation/images/advanced-string-fields.png" alt="advanced tab of an entry" width="300px" />](documentation/images/advanced-string-fields.png)
 15. Override the version returned to KeePassXC-Browser
 16. When a database is selected, KeePassNatMsg will always use the selected database to search for entries.
 17. Use the same settings as KeePassXC. If checked, it will share all Allow/Deny lists and keys with KeePassXC.
@@ -118,16 +138,39 @@ The options dialog will appear:
 
 Will display all configured browser keys, and you can remove them as needed.
 
+## Passkeys
+
+KeePassNatMsg handles passkey requests from keepassxc-browser the same way KeePassXC does. Passkeys are stored in the `KPEX_PASSKEY_*` string fields of an entry, the format KeePassXC uses, so passkeys created in KeePass work in KeePassXC and the other way round. ES256, EdDSA and RS256 keys are supported.
+
+To use passkeys, enable them in the keepassxc-browser settings (General tab, "Passkeys" card). The card is only shown when the extension is connected to KeePassNatMsg 2.1.0 or newer. If no passkey is found, the extension falls back to the browser's own passkey dialog unless the fallback option is turned off.
+
+When a website registers a passkey, KeePassNatMsg asks where to store it:
+
+ * entries matching the website that don't have a passkey yet are suggested; **Add to entry** stores the passkey there
+ * the search field searches all entries of the database (KeePass search syntax), to add the passkey to any other entry
+ * **Register new** creates a new entry in the group "KeePassXC-Browser Passkeys" (or the default passkey group set in keepassxc-browser)
+ * if a passkey for the same user already exists, it is listed and can be replaced with **Update**
+
+![Register a passkey: suggested entry](documentation/images/passkey-register-suggestion.png)
+
+![Register a passkey: search for another entry](documentation/images/passkey-register-search.png)
+
+When logging in, all passkeys for the website are listed:
+
+![Log in with a passkey](documentation/images/passkey-authenticate.png)
+
+The screenshots show KeePass on Linux (Mono); on Windows the dialogs use the native look.
+
 ## Tips and Tricks
 
 ### Support multiple URLs for one username + password
 This is already implemented directly in KeePass.
 
 1. Open the context menu of an entry by clicking right on it and select _Duplicate entry_:
-[<img src="https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/keepass-context-menu.png" alt="context-menu-entry" />](https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/keepass-context-menu.png)
+[<img src="documentation/images/keepass-context-menu.png" alt="context-menu-entry" />](documentation/images/keepass-context-menu.png)
 
 2. Check the option to use references for username and password:
-[<img src="https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/keepass-duplicate-entry-references.png" alt="mark checkbox references" width="300px" />](https://raw.github.com/smorks/KeePassNatMsg/master/documentation/images/keepass-duplicate-entry-references.png)
+[<img src="documentation/images/keepass-duplicate-entry-references.png" alt="mark checkbox references" width="300px" />](documentation/images/keepass-duplicate-entry-references.png)
 
 3. You can change the title, URL and everything of the copied entry, but not the username and password. These fields contain a _Reference Key_ which refers to the _master entry_ you copied from.
 
@@ -141,10 +184,10 @@ KeePassNatMsg can also use the existence of either KeeOtp (`otp`) or KeeTrayTOTP
 
 __First:__ If an error occurs it will be shown as notification in system tray or as message box in KeePass.
 
-Otherwise please check if it could be an error of the client you are using. For keepassxc-browser issues you can [report an error here](https://github.com/varjolintu/keepassxc-browser/issues/).
+Otherwise please check if it could be an error of the client you are using. For keepassxc-browser issues you can [report an error here](https://github.com/keepassxreboot/keepassxc-browser/issues/).
 
 
-If you are having problems with KeePassNatMsg, please tell us at least the following information:
+If you are having problems with KeePassNatMsg, please [open an issue](https://github.com/huggenknubbel/keepassnatmsg/issues) and tell us at least the following information:
 * operating system & version
 * version of KeePass
 * version of KeePassNatMsg
@@ -162,7 +205,7 @@ For every entry, the [Levenshtein Distance](http://en.wikipedia.org/wiki/Levensh
 
 Only the Entries with the minimal distance are returned.
 
-###Example:
+### Example:
 Submit-Url: http://www.host.com/subdomain1/login
 
 Entry-URL|Distance
