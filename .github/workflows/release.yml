@@ -26,7 +26,7 @@ jobs:
           mkdir build
           7z x -o"build" KeePass.zip KeePass.exe
           $ainfo = "KeePassNatMsg\Properties\AssemblyInfo.cs"
-          $content = (Get-Content -Path $ainfo) -replace '\[assembly: AssemblyVersion\("([\d.]+?)"\)\]', ('[assembly: AssemblyVersion("' + "${{ github.ref_name }}".substring(1) + '")]')
+          $content = (Get-Content -Path $ainfo) -replace '\[assembly: AssemblyVersion\("([\d.]+?)"\)\]', ('[assembly: AssemblyVersion("' + "${{ github.ref_name }}".substring(1).Split('-')[0] + '")]')
           $content | Set-Content -Path $ainfo
           msbuild /p:Configuration=Release
       - name: Prepare Release
@@ -47,6 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: release.txt
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
             KeePassNatMsg-${{ github.ref_name }}-binaries.zip
             KeePassNatMsg.plgx

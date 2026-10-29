@@ -1,8 +1,6 @@
-[![Main workflow](https://github.com/smorks/keepassnatmsg/actions/workflows/workflow.yml/badge.svg)](https://github.com/smorks/keepassnatmsg/actions/workflows/workflow.yml)
+[![Main workflow](https://github.com/huggenknubbel/keepassnatmsg/actions/workflows/workflow.yml/badge.svg)](https://github.com/huggenknubbel/keepassnatmsg/actions/workflows/workflow.yml)
 
-# *** KeePassNatMsg is in maintenance only mode ***
-
-I don't personally use this plugin anymore, therefore it is currently in maintenance mode, which means I will fix critical bugs, and will still accept PR's. I'm also open to passing this project on to a new maintainer, see the [relevant discussion topic](https://github.com/smorks/keepassnatmsg/discussions/104).
+> This is a maintained fork of [smorks/keepassnatmsg](https://github.com/smorks/keepassnatmsg), which is no longer developed. It adds passkey support compatible with KeePassXC and keeps dependencies up to date.
 
 # KeePassNatMsg
 
@@ -32,7 +30,7 @@ This plugin is primarily intended for use with the [keepassxc-browser](https://g
 
 ## Installation
 
- 1. Download the latest [KeePassNatMsg](https://github.com/smorks/keepassnatmsg/releases) release
+ 1. Download the latest [KeePassNatMsg](https://github.com/huggenknubbel/keepassnatmsg/releases) release
  	* Arch Linux (AUR): https://aur.archlinux.org/packages/keepass-natmsg/
  2. Unzip it into the KeePass\Plugins directory
 	* default directory in Ubuntu14.04: /usr/lib/keepass2/

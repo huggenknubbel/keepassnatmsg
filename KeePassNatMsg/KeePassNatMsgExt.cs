@@ -68,7 +68,7 @@ namespace KeePassNatMsg
         {
             get
             {
-                return "https://raw.githubusercontent.com/smorks/keepassnatmsg/release/keepass-plugin.txt";
+                return "https://raw.githubusercontent.com/huggenknubbel/keepassnatmsg/main/keepass-plugin.txt";
             }
         }
 
