@@ -72,6 +72,7 @@
             this.btnRemoveAllKeys = new System.Windows.Forms.Button();
             this.btnRemoveSelectedKeys = new System.Windows.Forms.Button();
             this.chkUseLegacyHostMatching = new System.Windows.Forms.CheckBox();
+            this.chkHttpAuthPermission = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -122,6 +123,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkHttpAuthPermission);
             this.tabPage1.Controls.Add(this.chkUseLegacyHostMatching);
             this.tabPage1.Controls.Add(this.lblVersion);
             this.tabPage1.Controls.Add(this.lblProxyVersion);
@@ -154,9 +156,9 @@
             // 
             // lblProxyVersion
             // 
-            this.lblProxyVersion.Location = new System.Drawing.Point(14, 259);
+            this.lblProxyVersion.Location = new System.Drawing.Point(14, 282);
             this.lblProxyVersion.Name = "lblProxyVersion";
-            this.lblProxyVersion.Size = new System.Drawing.Size(372, 129);
+            this.lblProxyVersion.Size = new System.Drawing.Size(372, 106);
             this.lblProxyVersion.TabIndex = 22;
             this.lblProxyVersion.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
@@ -575,6 +577,16 @@
             this.chkUseLegacyHostMatching.Text = "Use legacy host matching (don\'t prompt when host matches title/url)";
             this.chkUseLegacyHostMatching.UseVisualStyleBackColor = true;
             // 
+            // chkHttpAuthPermission
+            // 
+            this.chkHttpAuthPermission.AutoSize = true;
+            this.chkHttpAuthPermission.Location = new System.Drawing.Point(7, 259);
+            this.chkHttpAuthPermission.Name = "chkHttpAuthPermission";
+            this.chkHttpAuthPermission.Size = new System.Drawing.Size(253, 17);
+            this.chkHttpAuthPermission.TabIndex = 24;
+            this.chkHttpAuthPermission.Text = "Don\'t ask for permission for HTTP &Basic Auth";
+            this.chkHttpAuthPermission.UseVisualStyleBackColor = true;
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.okButton;
@@ -609,6 +621,7 @@
         }
 
         private System.Windows.Forms.CheckBox chkUseLegacyHostMatching;
+        private System.Windows.Forms.CheckBox chkHttpAuthPermission;
 
         #endregion
 

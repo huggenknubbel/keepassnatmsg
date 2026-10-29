@@ -21,6 +21,10 @@ namespace KeePassNatMsg.Entry
         private const string TotpPlaceholder = "{TIMEOTP}";
         private const string TotpLegacyPlaceholder = "{TOTP}";
 
+        // Entry/group options shared with KeePassXC
+        private const string OnlyHttpAuthKey = "BrowserOnlyHttpAuth";
+        private const string NotHttpAuthKey = "BrowserNotHttpAuth";
+
         private readonly IPluginHost _host;
         private readonly KeePassNatMsgExt _ext;
         private readonly List<string> _allowedSchemes = new List<string>(new[] { "http", "https", "ftp", "sftp" });
@@ -39,6 +43,7 @@ namespace KeePassNatMsg.Entry
             var id = msg.GetString("id");
             var url = msg.GetString("url");
             var submitUrl = msg.GetString("submitUrl");
+            var httpAuth = msg.GetString("httpAuth") == "true";
 
             Uri hostUri;
             Uri submitUri = null;
@@ -72,11 +77,12 @@ namespace KeePassNatMsg.Entry
             var resp = req.GetResponse();
             resp.Message.Add("id", id);
 
-            var items = FindMatchingEntries(url, null);
-            if (items.ToList().Count > 0)
+            var configOpt = new ConfigOpt(_host.CustomConfig);
+            IEnumerable<PwEntryDatabase> items = FindMatchingEntries(url, null)
+                .Where(e => httpAuth ? !HasOption(e.entry, NotHttpAuthKey) : !HasOption(e.entry, OnlyHttpAuthKey))
+                .ToList();
+            if (items.Any())
             {
-                var configOpt = new ConfigOpt(_host.CustomConfig);
-
                 var filter = new GFunc<PwEntry, bool>((PwEntry e) =>
                 {
                     var c = _ext.GetEntryConfig(e);
@@ -98,9 +104,11 @@ namespace KeePassNatMsg.Entry
                     return c == null || (!c.Allow.Contains(hostUri.Authority)) || (submitUri != null && !c.Allow.Contains(submitUri.Authority));
                 });
 
-                var needPrompting = items.Where(e => filter(e.entry)).ToList();
+                // Like KeePassXC, HTTP Basic Auth always asks, so the right entry can be picked
+                var askHttpAuth = httpAuth && !configOpt.HttpAuthPermission;
+                var needPrompting = items.Where(e => askHttpAuth || filter(e.entry)).ToList();
 
-                if (needPrompting.Count > 0 && !configOpt.AlwaysAllowAccess)
+                if (needPrompting.Count > 0 && (askHttpAuth || !(configOpt.AlwaysAllowAccess || httpAuth)))
                 {
                     var win = _host.MainWindow;
 
@@ -111,26 +119,25 @@ namespace KeePassNatMsg.Entry
                             f.Icon = win.Icon;
                             f.Plugin = _ext;
                             f.StartPosition = win.Visible ? FormStartPosition.CenterParent : FormStartPosition.CenterScreen;
+                            f.HttpAuth = httpAuth;
                             f.Entries = needPrompting.Select(e => e.entry).ToList();
                             f.Host = submitUri != null ? submitUri.Authority : hostUri.Authority;
                             f.Load += delegate { f.Activate(); };
                             f.ShowDialog(win);
+                            var selected = f.Allowed ? f.SelectedEntries : new List<PwEntry>();
                             if (f.Remember && (f.Allowed || f.Denied))
                             {
                                 foreach (var e in needPrompting)
                                 {
                                     var c = _ext.GetEntryConfig(e.entry) ?? new EntryConfig();
-                                    var set = f.Allowed ? c.Allow : c.Deny;
+                                    var set = selected.Contains(e.entry) ? c.Allow : c.Deny;
                                     set.Add(hostUri.Authority);
                                     if (submitUri != null && submitUri.Authority != hostUri.Authority)
                                         set.Add(submitUri.Authority);
                                     _ext.SetEntryConfig(e.entry, c);
                                 }
                             }
-                            if (!f.Allowed)
-                            {
-                                items = items.Except(needPrompting);
-                            }
+                            items = items.Except(needPrompting.Where(e => !selected.Contains(e.entry))).ToList();
                         });
                     }
                 }
@@ -219,6 +226,19 @@ namespace KeePassNatMsg.Entry
             resp.Message.Add("entries", new JArray());
 
             return resp;
+        }
+
+        // Set on the entry or inherited from its groups, as in KeePassXC
+        private static bool HasOption(PwEntry entry, string key)
+        {
+            if (entry.CustomData.Exists(key))
+                return entry.CustomData.Get(key) == "true";
+            for (var g = entry.ParentGroup; g != null; g = g.ParentGroup)
+            {
+                if (g.CustomData.Exists(key))
+                    return g.CustomData.Get(key) == "true";
+            }
+            return false;
         }
 
         private void CheckTotp(PwEntryDatabase item, JObject obj)

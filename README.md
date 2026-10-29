@@ -30,6 +30,7 @@ The original KeePassNatMsg 2.0.17 was released in January 2024. This fork adds:
  * **Password generator** works again with current keepassxc-browser versions ([smorks/keepassnatmsg#118](https://github.com/smorks/keepassnatmsg/issues/118)). The plugin now reports KeePassXC 2.7.10 to the extension.
  * **Group name** is returned with each login, so the extension no longer shows "undefined" ([smorks/keepassnatmsg#121](https://github.com/smorks/keepassnatmsg/issues/121)).
  * **Port numbers**: an entry URL with an explicit port only matches that port, like in KeePassXC ([smorks/keepassnatmsg#88](https://github.com/smorks/keepassnatmsg/issues/88)).
+ * **HTTP Basic Auth** works like in KeePassXC: KeePass always asks which entry to use, the access dialog lets you check single entries (double-click picks one), and the KeePassXC entry/group options "only for HTTP Auth" and "not for HTTP Auth" are respected. Asking can be turned off in the options.
  * **Dependencies**: Newtonsoft.Json 13.0.4 (fixes CVE-2024-21907), BouncyCastle 2.7.0 for the passkey cryptography, .NET Framework 4.8.
  * **Native messaging proxy** is part of this project and embedded into the plugin. It is no longer downloaded from the original project when installing the native messaging host.
  * **Builds and releases** run again on current GitHub runners.

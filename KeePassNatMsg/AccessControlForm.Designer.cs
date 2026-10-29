@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.Button AllowButton;
             System.Windows.Forms.Button DenyButton;
-            this.EntriesBox = new System.Windows.Forms.ListBox();
+            this.EntriesBox = new System.Windows.Forms.CheckedListBox();
             this.RememberCheck = new System.Windows.Forms.CheckBox();
             this.ConfirmTextLabel = new System.Windows.Forms.Label();
             AllowButton = new System.Windows.Forms.Button();
@@ -64,12 +64,15 @@
             this.EntriesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.EntriesBox.CheckOnClick = true;
             this.EntriesBox.FormattingEnabled = true;
+            this.EntriesBox.IntegralHeight = false;
             this.EntriesBox.Location = new System.Drawing.Point(12, 12);
             this.EntriesBox.Name = "EntriesBox";
             this.EntriesBox.Size = new System.Drawing.Size(320, 108);
             this.EntriesBox.Sorted = true;
             this.EntriesBox.TabIndex = 0;
+            this.EntriesBox.DoubleClick += new System.EventHandler(this.EntriesBox_DoubleClick);
             // 
             // RememberCheck
             // 
@@ -116,7 +119,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox EntriesBox;
+        private System.Windows.Forms.CheckedListBox EntriesBox;
         private System.Windows.Forms.CheckBox RememberCheck;
         private System.Windows.Forms.Label ConfirmTextLabel;
     }

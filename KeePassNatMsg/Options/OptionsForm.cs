@@ -67,6 +67,7 @@ namespace KeePassNatMsg.Options
             chkSearchUrls.Checked = _config.SearchUrls;
             chkUseKpxcSettingsKey.Checked = _config.UseKeePassXcSettings;
             chkUseLegacyHostMatching.Checked = _config.UseLegacyHostMatching;
+            chkHttpAuthPermission.Checked = _config.HttpAuthPermission;
 
             this.returnStringFieldsCheckbox_CheckedChanged(null, EventArgs.Empty);
 
@@ -104,6 +105,7 @@ namespace KeePassNatMsg.Options
             _config.ConnectionDatabaseHash = (comboBoxDatabases.SelectedItem as DatabaseItem) == null ? null : (comboBoxDatabases.SelectedItem as DatabaseItem).DbHash;
             _config.SearchUrls = chkSearchUrls.Checked;
             _config.UseLegacyHostMatching = chkUseLegacyHostMatching.Checked;
+            _config.HttpAuthPermission = chkHttpAuthPermission.Checked;
 
             if (_config.UseKeePassXcSettings != chkUseKpxcSettingsKey.Checked)
             {

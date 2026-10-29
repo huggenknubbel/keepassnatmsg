@@ -32,6 +32,7 @@ namespace KeePassNatMsg
         const string SearchUrlsKey = "KeePassHttp_SearchUrls";
         const string UseKeePassXcSettingsKey = "KeePassNatMsg_UseKpxcSettings";
         private const string UseLegacyHostMatchingKey = "KeePassNatMsg_UseLegacyHostMatching";
+        private const string HttpAuthPermissionKey = "KeePassNatMsg_HttpAuthPermission";
 
 		public ConfigOpt(AceCustomConfig config)
         {
@@ -162,6 +163,13 @@ namespace KeePassNatMsg
         {
             get { return _config.GetBool(UseLegacyHostMatchingKey, false); }
             set { _config.SetBool(UseLegacyHostMatchingKey, value); }
+        }
+
+        // Don't ask for HTTP Basic Auth, like KeePassXC's "Do not ask permission for HTTP Basic Auth"
+        public bool HttpAuthPermission
+        {
+            get { return _config.GetBool(HttpAuthPermissionKey, false); }
+            set { _config.SetBool(HttpAuthPermissionKey, value); }
         }
     }
 }
