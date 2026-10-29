@@ -35,7 +35,7 @@ The original KeePassNatMsg 2.0.17 was released in January 2024. This fork adds:
 
 ### AI assistance
 
-The changes in this fork (the passkey implementation and the updates listed above) were written with AI assistance (Claude by Anthropic, via Claude Code). The code of the original project was not written with AI assistance. The changes were reviewed and tested by the maintainer: the passkey cryptography is checked against the test vectors of KeePassXC and against Botan, the library KeePassXC uses, and the plugin was tested end-to-end with KeePass 2.61 on Mono and on Windows.
+This fork was partly developed with AI assistance.
 
 ## System requirements
  * KeePass 2.x (tested with 2.61)
