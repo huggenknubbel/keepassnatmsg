@@ -16,11 +16,11 @@ jobs:
     runs-on: 'windows-2022'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Download KeePass
         run: curl.exe -fsSL -o KeePass.zip "https://sourceforge.net/projects/keepass/files/KeePass%202.x/${{ env.KEEPASS_VERSION }}/KeePass-${{ env.KEEPASS_VERSION }}.zip/download"
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
       - name: Extract KeePass and Build
         run: |
           mkdir build
@@ -44,7 +44,7 @@ jobs:
           $hash = (Get-FileHash "$plgx" sha256).Hash.ToLower()
           Add-Content -Path 'release.txt' -Value (('* '+$plgx),('  * '+$hash))
       - name: Publish Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: release.txt
           prerelease: ${{ contains(github.ref_name, '-') }}
