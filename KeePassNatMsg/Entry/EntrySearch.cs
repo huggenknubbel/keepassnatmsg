@@ -447,18 +447,18 @@ namespace KeePassNatMsg.Entry
                 var c = _ext.GetEntryConfig(e);
                 if (c != null)
                 {
-                    if (c.Allow.Contains(formHost))
+                    if (c.Allow.Contains(formHost) || c.Allow.Contains(hostUri.Authority))
                         return true;
-                    if (c.Deny.Contains(formHost))
+                    if (c.Deny.Contains(formHost) || c.Deny.Contains(hostUri.Authority))
                         return false;
                     if (!string.IsNullOrEmpty(realm) && c.Realm != realm)
                         return false;
                 }
 
-                if (IsValidUrl(entryUrl, formHost))
+                if (IsValidUrl(entryUrl, hostUri))
                     return true;
 
-                if (IsValidUrl(title, formHost))
+                if (IsValidUrl(title, hostUri))
                     return true;
 
                 if (searchUrls)
@@ -473,10 +473,14 @@ namespace KeePassNatMsg.Entry
                             return true;
                         }
 
-                        if (IsValidUrl(sfv, formHost))
+                        if (IsValidUrl(sfv, hostUri))
                             return true;
                     }
                 }
+
+                Uri entryUri;
+                if (Uri.TryCreate(entryUrl, UriKind.Absolute, out entryUri) && !entryUri.IsDefaultPort && entryUri.Port != hostUri.Port)
+                    return false;
 
                 return formHost.Contains(title) || (!string.IsNullOrEmpty(entryUrl) && formHost.Contains(entryUrl));
             });
@@ -508,10 +512,12 @@ namespace KeePassNatMsg.Entry
             }
         }
 
-        private bool IsValidUrl(string url, string host)
+        // An entry URL with an explicit port only matches that port, like in KeePassXC
+        private bool IsValidUrl(string url, Uri hostUri)
         {
             Uri uri;
-            return Uri.TryCreate(url, UriKind.Absolute, out uri) && _allowedSchemes.Contains(uri.Scheme) && host.EndsWith(uri.Host);
+            return Uri.TryCreate(url, UriKind.Absolute, out uri) && _allowedSchemes.Contains(uri.Scheme) && hostUri.Host.EndsWith(uri.Host)
+                && (uri.IsDefaultPort || uri.Port == hostUri.Port);
         }
 
         private static SearchParameters MakeSearchParameters(bool excludeExpired)
