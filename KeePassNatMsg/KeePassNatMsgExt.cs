@@ -509,6 +509,33 @@ namespace KeePassNatMsg
             }
         }
 
+        internal List<PwDatabase> GetSearchDatabases()
+        {
+            var listDatabases = new List<PwDatabase>();
+
+            var configOpt = new ConfigOpt(HostInstance.CustomConfig);
+            if (configOpt.AllowSearchDatabase == (ulong)AllowSearchDatabase.SearchInAllOpenedDatabases)
+            {
+                foreach (PwDocument doc in HostInstance.MainWindow.DocumentManager.Documents)
+                {
+                    if (doc.Database.IsOpen)
+                    {
+                        listDatabases.Add(doc.Database);
+                    }
+                }
+            }
+            else if (configOpt.AllowSearchDatabase == (ulong)AllowSearchDatabase.RestrictSearchInSpecificDatabase)
+            {
+                listDatabases.Add(GetSearchDatabase());
+            }
+            else
+            {
+                listDatabases.Add(HostInstance.Database);
+            }
+
+            return listDatabases;
+        }
+
         public PwDatabase GetSearchDatabase()
         {
             var options = new ConfigOpt(HostInstance.CustomConfig);

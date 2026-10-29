@@ -114,10 +114,10 @@ namespace KeePassNatMsg.Entry
             return false;
         }
 
-        private void AutoSaveIfRequired(PwDatabase db)
+        internal static void AutoSaveIfRequired(PwDatabase db)
         {
             if (!KeePass.Program.Config.Application.AutoSaveAfterEntryEdit) return;
-            _host.MainWindow.Invoke(new MethodInvoker(() =>
+            KeePassNatMsgExt.HostInstance.MainWindow.Invoke(new MethodInvoker(() =>
             { //different thread access UI elements
                 KeePassNatMsgExt.HostInstance.MainWindow.SaveDatabase(db, null);
             }));

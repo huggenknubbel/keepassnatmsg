@@ -1,6 +1,7 @@
 ﻿using KeePass.Plugins;
 using KeePassLib;
 using KeePassNatMsg.Entry;
+using KeePassNatMsg.Passkeys;
 using KeePassNatMsg.Protocol.Action;
 using Newtonsoft.Json.Linq;
 using System;
@@ -40,6 +41,8 @@ namespace KeePassNatMsg.Protocol
                 {Actions.GET_DATABASE_GROUPS, GetDatabaseGroups},
                 {Actions.CREATE_NEW_GROUP, CreateNewGroup},
                 {Actions.GET_TOTP, GetTotp},
+                {Actions.PASSKEYS_GET, PasskeysGet},
+                {Actions.PASSKEYS_REGISTER, PasskeysRegister},
             };
         }
 
@@ -290,6 +293,42 @@ namespace KeePassNatMsg.Protocol
 
             resp.Message.Add("totp", totp);
 
+            return resp;
+        }
+
+        private Response PasskeysGet(Request req)
+        {
+            if (!req.TryDecrypt())
+                return new ErrorResponse(req, ErrorType.CannotDecryptMessage);
+
+            var publicKey = req.Message["publicKey"] as JObject;
+            if (publicKey == null)
+                return new ErrorResponse(req, ErrorType.PasskeysEmptyPublicKey);
+
+            var origin = req.Message.GetString("origin");
+            if (!PasskeyOptions.IsOriginAllowed(origin))
+                return new ErrorResponse(req, ErrorType.PasskeysInvalidUrlProvided);
+
+            var resp = req.GetResponse();
+            resp.Message.Add("response", new PasskeyHandler().Authenticate(publicKey, origin));
+            return resp;
+        }
+
+        private Response PasskeysRegister(Request req)
+        {
+            if (!req.TryDecrypt())
+                return new ErrorResponse(req, ErrorType.CannotDecryptMessage);
+
+            var publicKey = req.Message["publicKey"] as JObject;
+            if (publicKey == null)
+                return new ErrorResponse(req, ErrorType.PasskeysEmptyPublicKey);
+
+            var origin = req.Message.GetString("origin");
+            if (!PasskeyOptions.IsOriginAllowed(origin))
+                return new ErrorResponse(req, ErrorType.PasskeysInvalidUrlProvided);
+
+            var resp = req.GetResponse();
+            resp.Message.Add("response", new PasskeyHandler().Register(publicKey, origin, req.Message.GetString("groupName")));
             return resp;
         }
     }

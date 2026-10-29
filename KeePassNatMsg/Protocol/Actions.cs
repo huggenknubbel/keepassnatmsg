@@ -16,5 +16,7 @@ namespace KeePassNatMsg.Protocol
         public const string GET_DATABASE_GROUPS = "get-database-groups";
         public const string CREATE_NEW_GROUP = "create-new-group";
         public const string GET_TOTP = "get-totp";
+        public const string PASSKEYS_GET = "passkeys-get";
+        public const string PASSKEYS_REGISTER = "passkeys-register";
     }
 }

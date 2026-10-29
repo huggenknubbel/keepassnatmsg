@@ -394,7 +394,7 @@ namespace KeePassNatMsg.Entry
             return fields;
         }
 
-        private IEnumerable<PwEntryDatabase> FindMatchingEntries(string url, string realm)
+        internal IEnumerable<PwEntryDatabase> FindMatchingEntries(string url, string realm)
         {
             var listResult = new List<PwEntryDatabase>();
             var hostUri = new Uri(url);
@@ -404,27 +404,9 @@ namespace KeePassNatMsg.Entry
             var origSearchHost = hostUri.Host;
             var searchScheme = hostUri.Scheme;
 
-            List<PwDatabase> listDatabases = new List<PwDatabase>();
+            var listDatabases = _ext.GetSearchDatabases();
 
             var configOpt = new ConfigOpt(_host.CustomConfig);
-            if (configOpt.AllowSearchDatabase == (ulong)AllowSearchDatabase.SearchInAllOpenedDatabases)
-            {
-                foreach (PwDocument doc in _host.MainWindow.DocumentManager.Documents)
-                {
-                    if (doc.Database.IsOpen)
-                    {
-                        listDatabases.Add(doc.Database);
-                    }
-                }
-            }
-            else if (configOpt.AllowSearchDatabase == (ulong)AllowSearchDatabase.RestrictSearchInSpecificDatabase)
-            {
-                listDatabases.Add(_ext.GetSearchDatabase());
-            }
-            else
-            {
-                listDatabases.Add(_host.Database);
-            }
 
             var parms = MakeSearchParameters(configOpt.HideExpired);
             var searchUrls = configOpt.SearchUrls;

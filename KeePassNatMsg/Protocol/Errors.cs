@@ -18,7 +18,21 @@
         NoUrlProvided,
         NoLoginsFound,
         NoGroupsFound,
-        CannotCreateNewGroup
+        CannotCreateNewGroup,
+        PasskeysAttestationNotSupported = 20,
+        PasskeysCredentialIsExcluded,
+        PasskeysRequestCanceled,
+        PasskeysInvalidUserVerification,
+        PasskeysEmptyPublicKey,
+        PasskeysInvalidUrlProvided,
+        PasskeysOriginNotAllowed,
+        PasskeysDomainIsNotValid,
+        PasskeysDomainRpIdMismatch,
+        PasskeysNoSupportedAlgorithms,
+        PasskeysWaitForLifetimer,
+        PasskeysUnknownError,
+        PasskeysInvalidChallenge,
+        PasskeysInvalidUserId
     }
 
     public static class Errors

@@ -41,6 +41,9 @@
       <HintPath>..\build\KeePass.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix">
       <HintPath>lib\Mono.Posix.dll</HintPath>
@@ -76,6 +79,12 @@
     </Compile>
     <Compile Include="Protocol\Listener\SocketReadState.cs" />
     <Compile Include="Utils\EnumExtension.cs" />
+    <Compile Include="Passkeys\PasskeyConfirmationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Passkeys\PasskeyCrypto.cs" />
+    <Compile Include="Passkeys\PasskeyHandler.cs" />
+    <Compile Include="Passkeys\PasskeyOptions.cs" />
     <Compile Include="NativeMessaging\BrowserSelectForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -22,6 +22,7 @@ This plugin is primarily intended for use with the [keepassxc-browser](https://g
  * request for unlocking the database if it is locked while connecting
  * searches in all opened databases (if user activates this feature)
  * Whenever events occur, the user is prompted either by tray notification or requesting interaction (allow/deny/remember).
+ * passkeys, stored in the same `KPEX_PASSKEY_*` fields as KeePassXC, so they work in both (requires passkeys to be enabled in keepassxc-browser)
 
 ## System requirements
  * KeePass 2.17 or higher
