@@ -191,6 +191,7 @@ namespace KeePassNatMsg.Entry
                         { "login", up[0] },
                         { "password", up[1] },
                         { "uuid", item.entry.Uuid.ToHexString() },
+                        { "group", item.entry.ParentGroup != null ? item.entry.ParentGroup.Name : string.Empty },
                         { "stringFields", fldArr },
                     };
 
